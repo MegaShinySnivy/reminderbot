@@ -2,7 +2,6 @@ package bot
 
 import (
 	"log"
-	"os"
 	"time"
 
 	"github.com/bwmarrin/discordgo"
@@ -13,11 +12,14 @@ var (
 	ReminderBotChannel string
 	ReminderBotMessage string
 	BotToken           string
+	ReminderDay        int
+	ReminderHour       int
 )
 
 func Run() {
 	// Get the current day of the month
-	day := GetTime()
+	day := GetDay()
+	hour := GetTime()
 	// Set up a discord session with our token
 	discord, err := discordgo.New("Bot " + BotToken)
 	if err != nil {
@@ -27,18 +29,19 @@ func Run() {
 	discord.Open()
 	defer discord.Close()
 	// Actually send or dont send a message if the date is the 1st (soon whatever the user sets it to)
-	if day == 1 {
-		log.Println("it is the first so we are running")
+	if (day == ReminderDay) && (hour == ReminderHour) {
+		log.Println("it is the configured date and hour so we are running")
 		discord.ChannelMessageSend(ReminderBotChannel, ReminderBotMessage)
 	}
-	if day > 1 {
-		log.Println("it is not the 1st so there's no need to run right now")
+	if day != ReminderDay {
+		log.Println("it is not the configured date so there's no need to run right now")
 	}
-	// This is here so cron doesn't assume the process didn't complete properly
-	os.Exit(0)
+	if hour != ReminderHour {
+		log.Println("it is the configured date, but not time, so no need to run right now")
+	}
 }
 
-func GetTime() int {
+func GetDay() int {
 	// Gets the time...
 	d := time.Now()
 	// Changes it to just the day of the month...
@@ -47,4 +50,15 @@ func GetTime() int {
 	log.Println(day)
 	// and return
 	return day
+}
+
+func GetTime() int {
+	// Gets the time...
+	t := time.Now()
+	// Changes it to just the current hour...
+	hour := t.Hour()
+	// Log it for debugging
+	log.Println(hour)
+	// and return
+	return hour
 }
