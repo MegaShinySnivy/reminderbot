@@ -8,6 +8,7 @@ import (
 )
 
 func main() {
+	// This gets all of our bot's required information.
 	botToken, ok := os.LookupEnv("BOT_TOKEN")
 	if !ok {
 		log.Fatal("Must set Discord token as env variable: BOT_TOKEN")
