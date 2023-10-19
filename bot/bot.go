@@ -3,7 +3,6 @@ package bot
 import (
 	"log"
 	"os"
-	"time"
 
 	"github.com/bwmarrin/discordgo"
 )
@@ -34,13 +33,4 @@ func Run() {
 		log.Fatal(err2)
 	}
 	os.Exit(0)
-}
-
-func GetTime() (int, int) {
-	t := time.Now()
-	hour := t.Hour()
-	day := t.Day()
-	log.Println("Reading", hour, "as current hour and", day, "as current day")
-	log.Println("Reading", t, "as full current time")
-	return hour, day
 }
