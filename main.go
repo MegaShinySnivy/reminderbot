@@ -4,7 +4,6 @@ import (
 	"log"
 	"os"
 	"strconv"
-	"time"
 
 	"reminderbot/bot"
 )
@@ -39,11 +38,7 @@ func main() {
 	bot.ReminderBotChannel = reminderBotChannel
 	bot.ReminderBotMessage = reminderBotMessage
 	bot.BotToken = botToken
-	for {
-		bot.Run()
-		// wait to check again until one hour has passed
-		time.Sleep(60 * time.Minute)
-	}
+	bot.Run()
 }
 
 func convertDay(ReminderDayString string) int {

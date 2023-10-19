@@ -17,48 +17,35 @@ var (
 )
 
 func Run() {
-	// Get the current day of the month
-	day := GetDay()
-	hour := GetTime()
 	// Set up a discord session with our token
-	discord, err := discordgo.New("Bot " + BotToken)
-	if err != nil {
-		log.Fatal(err)
+	discord, err0 := discordgo.New("Bot " + BotToken)
+	if err0 != nil {
+		log.Fatal(err0)
 	}
 	// Open and cleanly close the connection with discord
-	discord.Open()
+	err1 := discord.Open()
+	if err1 != nil {
+		log.Fatal(err1)
+	}
 	defer discord.Close()
-	// Actually send or dont send a message if the date is the 1st (soon whatever the user sets it to)
-	if (day == ReminderDay) && (hour == ReminderHour) {
-		log.Println("it is the configured date and hour so we are running")
-		discord.ChannelMessageSend(ReminderBotChannel, ReminderBotMessage)
-	}
-	if day != ReminderDay {
-		log.Println("it is not the configured date so there's no need to run right now")
-	}
-	if hour != ReminderHour {
-		log.Println("it is the configured date, but not time, so no need to run right now")
+	for {
+		// Get the current day of the month
+		CurrentDay, CurrentHour := GetTime()
+		// Actually send or dont send a message if the date is the 1st (soon whatever the user sets it to)
+		if (CurrentDay == ReminderDay) && (CurrentHour == ReminderHour) {
+			log.Println("it is the configured date and hour so we are running")
+			discord.ChannelMessageSend(ReminderBotChannel, ReminderBotMessage)
+		} else {
+			log.Println("it is currently", CurrentDay, "and", CurrentHour, "and not", ReminderDay, "and", ReminderHour, "so we are not running")
+		}
+		time.Sleep(time.Hour)
 	}
 }
 
-func GetDay() int {
-	// Gets the time...
-	d := time.Now()
-	// Changes it to just the day of the month...
-	day := d.Day()
-	// Log it for debugging
-	log.Println(day)
-	// and return
-	return day
-}
-
-func GetTime() int {
-	// Gets the time...
+func GetTime() (int, int) {
 	t := time.Now()
-	// Changes it to just the current hour...
 	hour := t.Hour()
-	// Log it for debugging
-	log.Println(hour)
-	// and return
-	return hour
+	day := t.Day()
+	log.Println("Reading", hour, "as current hour and", day, "as current day")
+	return hour, day
 }
