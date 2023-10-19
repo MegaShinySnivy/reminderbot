@@ -2,6 +2,7 @@ package bot
 
 import (
 	"log"
+	"os"
 	"time"
 
 	"github.com/bwmarrin/discordgo"
@@ -12,8 +13,6 @@ var (
 	ReminderBotChannel string
 	ReminderBotMessage string
 	BotToken           string
-	ReminderDay        int
-	ReminderHour       int
 )
 
 func Run() {
@@ -27,19 +26,14 @@ func Run() {
 	if err1 != nil {
 		log.Fatal(err1)
 	}
+	// Send a message on run
 	defer discord.Close()
-	for {
-		// Get the current day of the month
-		CurrentDay, CurrentHour := GetTime()
-		// Actually send or dont send a message if the date is the 1st (soon whatever the user sets it to)
-		if (CurrentDay == ReminderDay) && (CurrentHour == ReminderHour) {
-			log.Println("it is the configured date and hour so we are running")
-			discord.ChannelMessageSend(ReminderBotChannel, ReminderBotMessage)
-		} else {
-			log.Println("it is currently", CurrentDay, "and", CurrentHour, "and not", ReminderDay, "and", ReminderHour, "so we are not running")
-		}
-		time.Sleep(time.Hour)
+	log.Println("it is the configured date and hour so we are sending the following message:", ReminderBotMessage)
+	_, err2 := discord.ChannelMessageSend(ReminderBotChannel, ReminderBotMessage)
+	if err2 != nil {
+		log.Fatal(err2)
 	}
+	os.Exit(0)
 }
 
 func GetTime() (int, int) {
@@ -47,5 +41,6 @@ func GetTime() (int, int) {
 	hour := t.Hour()
 	day := t.Day()
 	log.Println("Reading", hour, "as current hour and", day, "as current day")
+	log.Println("Reading", t, "as full current time")
 	return hour, day
 }
