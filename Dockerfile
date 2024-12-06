@@ -1,4 +1,4 @@
-FROM golang:1.23.0
+FROM golang:1.23.4
 LABEL org.opencontainers.image.source="https://github.com/MegaShinySnivy/reminderbot"
 WORKDIR /reminderbot
 COPY . .
