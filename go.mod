@@ -1,7 +1,8 @@
 module reminderbot
 
-go 1.21.3
-toolchain go1.24.1
+go 1.23.0
+
+toolchain go1.24.2
 
 require github.com/bwmarrin/discordgo v0.28.1
 
